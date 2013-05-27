@@ -52,6 +52,8 @@
 #include <list>
 #endif
 
+#include <stddef.h>
+
 //#define QT_CHECK_VALUELIST_RANGE
 
 #if defined(Q_CC_MSVC)

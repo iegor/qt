@@ -54,6 +54,8 @@
 #include <map>
 #endif
 
+#include <stddef.h>
+
 //#define QT_CHECK_MAP_RANGE
 
 struct Q_EXPORT QMapNodeBase
