@@ -50,7 +50,8 @@
 class QDir;
 class QFilePrivate;
 
-class Q_EXPORT QFile : public QIODevice			// file I/O device class
+// file I/O device class
+class Q_EXPORT QFile : public QIODevice
 {
 public:
     QFile();

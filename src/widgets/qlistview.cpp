@@ -1807,10 +1807,8 @@ void QListViewItem::setSelected( bool s )
 
 int QListViewItem::totalHeight() const
 {
-    if ( !visible )
-	return 0;
-    if ( maybeTotalHeight >= 0 )
-	return maybeTotalHeight;
+    if ( !visible ) { return 0; }
+    if ( maybeTotalHeight >= 0 ) { return maybeTotalHeight; }
     QListViewItem * that = (QListViewItem *)this;
     if ( !that->configured ) {
 	that->configured = TRUE;
@@ -1818,8 +1816,7 @@ int QListViewItem::totalHeight() const
     }
     that->maybeTotalHeight = that->ownHeight;
 
-    if ( !that->isOpen() || !that->childCount() )
-	return that->ownHeight;
+    if ( !that->isOpen() || !that->childCount() ) { return that->ownHeight; }
 
     QListViewItem * child = that->childItem;
     while ( child != 0 ) {
@@ -2838,8 +2835,7 @@ QListView::~QListView()
     with offset \a ox, \a oy. Uses the painter \a p.
 */
 
-void QListView::drawContentsOffset( QPainter * p, int ox, int oy,
-				    int cx, int cy, int cw, int ch )
+void QListView::drawContentsOffset( QPainter * p, int ox, int oy, int cx, int cy, int cw, int ch )
 {
     if ( columns() == 0 ) {
 	paintEmptyArea( p, QRect( cx, cy, cw, ch ) );
@@ -2963,8 +2959,7 @@ void QListView::drawContentsOffset( QPainter * p, int ox, int oy,
 		c++;
 	    }
 
-	    if ( current->i == d->focusItem && hasFocus() &&
-		 !d->allColumnsShowFocus ) {
+	    if ( current->i == d->focusItem && hasFocus() && !d->allColumnsShowFocus ) {
 		p->save();
 		int cell = d->h->mapToActual( 0 );
 		QRect r( d->h->cellPos( cell ) - ox, current->y - oy, d->h->cellSize( cell ), ih );
@@ -3054,7 +3049,7 @@ void QListView::drawContentsOffset( QPainter * p, int ox, int oy,
 
 
 
-/*!
+/** \fn void QListView::paintEmptyArea(QPainter *p,  const QRect &rect)
     Paints \a rect so that it looks like empty background using
     painter \a p. \a rect is in widget coordinates, ready to be fed to
     \a p.
@@ -3077,7 +3072,7 @@ void QListView::paintEmptyArea( QPainter * p, const QRect & rect )
 }
 
 
-/*
+/** \fn void QListView::buildDrawableList() const
     Rebuilds the list of drawable QListViewItems. This function is
     const so that const functions can call it without requiring
     d->drawables to be mutable.
@@ -3088,11 +3083,9 @@ void QListView::buildDrawableList() const
     d->r->enforceSortOrder();
 
     QPtrStack<QListViewPrivate::Pending> stack;
-    stack.push( new QListViewPrivate::Pending( ((int)d->rootIsExpandable)-1,
-					       0, d->r ) );
+    stack.push( new QListViewPrivate::Pending( ((int)d->rootIsExpandable)-1, 0, d->r ) );
 
-    // could mess with cy and ch in order to speed up vertical
-    // scrolling
+    // could mess with cy and ch in order to speed up vertical scrolling
     int cy = contentsY();
     int ch = ((QListView *)this)->visibleHeight();
     d->topPixel = cy + ch; // one below bottom
@@ -3101,13 +3094,12 @@ void QListView::buildDrawableList() const
     QListViewPrivate::Pending * cur;
 
     // used to work around lack of support for mutable
-    QPtrList<QListViewPrivate::DrawableItem> * dl;
-
-    dl = new QPtrList<QListViewPrivate::DrawableItem>;
+    QPtrList<QListViewPrivate::DrawableItem> * dl = new QPtrList<QListViewPrivate::DrawableItem>;
     dl->setAutoDelete( TRUE );
-    if ( d->drawables )
-	delete ((QListView *)this)->d->drawables;
-    ((QListView *)this)->d->drawables = dl;
+    if ( d->drawables ) {
+        delete ((QListView *)this)->d->drawables;
+        ((QListView *)this)->d->drawables = dl; //NOTE: Was out of if's scope, maybe error
+    }
 
     while ( !stack.isEmpty() ) {
 	cur = stack.pop();
@@ -3882,10 +3874,10 @@ bool QListView::eventFilter( QObject * o, QEvent * e )
 QListView * QListViewItem::listView() const
 {
     const QListViewItem* c = this;
-    while ( c && !c->is_root )
-	c = c->parentItem;
-    if ( !c )
-	return 0;
+    while ( c && !c->is_root ) {
+        c = c->parentItem;
+    }
+    if ( !c ) { return 0; }
     return ((QListViewPrivate::Root*)c)->theListView();
 }
 

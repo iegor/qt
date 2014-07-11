@@ -104,8 +104,7 @@ public:
     int height() const;
     virtual void invalidateHeight();
     int totalHeight() const;
-    virtual int width( const QFontMetrics&,
-		       const QListView*, int column) const;
+    virtual int width( const QFontMetrics&, const QListView*, int column) const;
     void widthChanged(int column=-1) const;
     int depth() const;
 
@@ -423,8 +422,7 @@ protected:
 
     void showEvent( QShowEvent * );
 
-    void drawContentsOffset( QPainter *, int ox, int oy,
-			     int cx, int cy, int cw, int ch );
+    void drawContentsOffset( QPainter *, int ox, int oy, int cx, int cy, int cw, int ch );
 
     virtual void paintEmptyArea( QPainter *, const QRect & );
     void styleChange( QStyle& );

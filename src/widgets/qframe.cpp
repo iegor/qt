@@ -513,12 +513,11 @@ void QFrame::paintEvent( QPaintEvent *event )
 
     if ( !contentsRect().contains( event->rect() ) ) {
         paint.save();
-	paint.setClipRegion( event->region().intersect(frameRect()) );
+        paint.setClipRegion( event->region().intersect(frameRect()) );
         drawFrame( &paint );
         paint.restore();
     }
-    if ( event->rect().intersects( contentsRect() ) &&
-         (fstyle & MShape) != HLine && (fstyle & MShape) != VLine ) {
+    if ( event->rect().intersects( contentsRect() ) && (fstyle & MShape) != HLine && (fstyle & MShape) != VLine ) {
         paint.setClipRegion( event->region().intersect( contentsRect() ) );
         drawContents( &paint );
     }

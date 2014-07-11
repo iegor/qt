@@ -959,11 +959,9 @@ QWidget::~QWidget()
 	    qApp->quit();
     }
 
-    if ( hasFocus() )
-	clearFocus();
+    if ( hasFocus() ) { clearFocus(); }
 
-    if ( isTopLevel() && isShown() && winId() )
-	hide();
+    if ( isTopLevel() && isShown() && winId() ) { hide(); }
 
     // A parent widget must destroy all its children before destroying itself
     if ( childObjects ) {			// delete children objects
@@ -1862,8 +1860,7 @@ QRect QWidget::frameGeometry() const
 }
 
 /*! \property QWidget::x
-    \brief the x coordinate of the widget relative to its parent including
-    any window frame
+    \brief the x coordinate of the widget relative to its parent including any window frame
 
     See the \link geometry.html Window Geometry documentation\endlink
     for an overview of top-level widget geometry.
@@ -1883,8 +1880,7 @@ int QWidget::x() const
 
 /*!
     \property QWidget::y
-    \brief the y coordinate of the widget relative to its parent and
-    including any window frame
+    \brief the y coordinate of the widget relative to its parent and including any window frame
 
     See the \link geometry.html Window Geometry documentation\endlink
     for an overview of top-level widget geometry.
@@ -5760,8 +5756,8 @@ QPoint QWidget::backgroundOffset() const
 */
 
 
-/*  Sets this widget to use layout \a l to manage the geometry of its
-  children.
+/** \fn void QWidget::setLayout()
+ * \brief Sets this widget to use layout \a l to manage the geometry of its children.
 
   If the widget already had a layout, the old layout is
   forgotten. (Note that it is not deleted.)

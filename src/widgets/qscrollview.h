@@ -168,9 +168,7 @@ public slots:
 
 protected:
     virtual void drawContents(QPainter*, int cx, int cy, int cw, int ch);
-    virtual void drawContentsOffset(QPainter*, int ox, int oy,
-		    int cx, int cy, int cw, int ch);
-
+    virtual void drawContentsOffset(QPainter*, int ox, int oy, int cx, int cy, int cw, int ch);
 
     virtual void contentsMousePressEvent( QMouseEvent* );
     virtual void contentsMouseReleaseEvent( QMouseEvent* );
