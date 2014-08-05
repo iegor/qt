@@ -1867,14 +1867,13 @@ void QLayout::remove( QWidget *widget )
     QLayoutIterator it = iterator();
     QLayoutItem *child;
     while ( (child = it.current()) != 0 ) {
-	if ( child->widget() == widget ) {
-	    it.deleteCurrent();
-	    invalidate(); // maybe redundant
-	    QApplication::postEvent( mainWidget(),
-				     new QEvent(QEvent::LayoutHint) );
-	} else {
-	    ++it;
-	}
+        if ( child->widget() == widget ) {
+            it.deleteCurrent();
+            invalidate(); // maybe redundant
+            QApplication::postEvent( mainWidget(), new QEvent(QEvent::LayoutHint) );
+        } else {
+            ++it;
+        }
     }
 }
 

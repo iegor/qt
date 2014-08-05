@@ -4156,8 +4156,8 @@ void QWidget::hideChildren( bool spontaneous )
 }
 
 
-/*!
-    Delayed initialization of a widget.
+/** \fn void QWidget::polish()
+    \brief Delayed initialization of a widget.
 
     This function will be called \e after a widget has been fully
     created and \e before it is shown the very first time.
@@ -4170,7 +4170,7 @@ void QWidget::hideChildren( bool spontaneous )
     After this function, the widget has a proper font and palette and
     QApplication::polish() has been called.
 
-    Remember to call QWidget's implementation first when reimplementing this
+    NOTE: Remember to call QWidget's implementation first when reimplementing this
     function to ensure that your program does not end up in infinite recursion.
 
     \sa constPolish(), QApplication::polish()
@@ -4459,22 +4459,19 @@ QRegion QWidget::clipRegion() const
 }
 
 
-/*!
-    Adjusts the size of the widget to fit the contents.
-
-    Uses sizeHint() if valid (i.e if the size hint's width and height
-    are \>= 0), otherwise sets the size to the children rectangle (the
-    union of all child widget geometries).
-
-    \sa sizeHint(), childrenRect()
-*/
-
+/** \fn void QWidget::adjustSize()
+ * \brief Adjusts the size of the widget to fit the contents.
+ *
+ * Uses sizeHint() if valid (i.e if the size hint's width and height are \>= 0),
+ * otherwise sets the size to the children rectangle (the union of all child widget geometries).
+ *
+ * \sa sizeHint(), childrenRect()
+ */
 void QWidget::adjustSize()
 {
     QApplication::sendPostedEvents( 0, QEvent::ChildInserted );
     QApplication::sendPostedEvents( 0, QEvent::LayoutHint );
-    if ( !testWState(WState_Polished) )
-	polish();
+    if ( !testWState(WState_Polished) ) { polish(); }
     QSize s = sizeHint();
 
     if ( isTopLevel() ) {
@@ -4501,12 +4498,12 @@ void QWidget::adjustSize()
 	}
     }
     if ( s.isValid() ) {
-	resize( s );
-	return;
+        resize( s );
+        return;
     }
     QRect r = childrenRect();			// get children rectangle
-    if ( r.isNull() )				// probably no widgets
-	return;
+    // probably no widgets
+    if ( r.isNull() ) { return; }
     resize( r.width() + 2 * r.x(), r.height() + 2 * r.y() );
 }
 
@@ -5902,9 +5899,8 @@ QWidget  *QWidget::childAt( const QPoint & p, bool includeThis ) const
 }
 
 
-/*!
-    Notifies the layout system that this widget has changed and may
-    need to change geometry.
+/*! \fn void QWidget::updateGeometry()
+    \brief Notifies the layout system that this widget has changed and may need to change geometry.
 
     Call this function if the sizeHint() or sizePolicy() have changed.
 
@@ -5912,11 +5908,10 @@ QWidget  *QWidget::childAt( const QPoint & p, bool includeThis ) const
     layout system will be notified as soon as the widget is shown.
 */
 
-void QWidget::updateGeometry()
-{
-    if ( !isTopLevel() && isShown() )
-	QApplication::postEvent( parentWidget(),
-				 new QEvent( QEvent::LayoutHint ) );
+void QWidget::updateGeometry() {
+    if ( !isTopLevel() && isShown() ) {
+        QApplication::postEvent( parentWidget(), new QEvent( QEvent::LayoutHint ) );
+    }
 }
 
 

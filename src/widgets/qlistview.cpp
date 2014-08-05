@@ -1421,8 +1421,7 @@ void QListViewItem::sortChildItems( int column, bool ascending )
     const int nColumns = ( listView() ? listView()->columns() : 0 );
 
     // only sort if the item have more than one child.
-    if ( column > nColumns || childItem == 0 || (childItem->siblingItem == 0 && childItem->childItem == 0))
-	return;
+    if ( column > nColumns || childItem == 0 || (childItem->siblingItem == 0 && childItem->childItem == 0)) { return; }
 
     // make an array for qHeapSort()
     QListViewPrivate::SortableItem * siblings
@@ -1430,12 +1429,12 @@ void QListViewItem::sortChildItems( int column, bool ascending )
     QListViewItem * s = childItem;
     int i = 0;
     while ( s && i < nChildren ) {
-	siblings[i].numCols = nColumns;
-	siblings[i].col = column;
-	siblings[i].asc = ascending;
-	siblings[i].item = s;
-	s = s->siblingItem;
-	i++;
+        siblings[i].numCols = nColumns;
+        siblings[i].col = column;
+        siblings[i].asc = ascending;
+        siblings[i].item = s;
+        s = s->siblingItem;
+        i++;
     }
 
     // and sort it.
@@ -1445,19 +1444,21 @@ void QListViewItem::sortChildItems( int column, bool ascending )
     // direction, and finally set this->childItem to the new top
     // child.
     if ( ascending ) {
-	for( i = 0; i < nChildren - 1; i++ )
-	    siblings[i].item->siblingItem = siblings[i+1].item;
-	siblings[nChildren-1].item->siblingItem = 0;
-	childItem = siblings[0].item;
-    } else {
-	for( i = nChildren - 1; i > 0; i-- )
-	    siblings[i].item->siblingItem = siblings[i-1].item;
-	siblings[0].item->siblingItem = 0;
-	childItem = siblings[nChildren-1].item;
+        for( i = 0; i < nChildren - 1; i++ ) {
+            siblings[i].item->siblingItem = siblings[i+1].item;
+        }
+        siblings[nChildren-1].item->siblingItem = 0;
+        childItem = siblings[0].item;
+    }
+    else {
+        for( i = nChildren - 1; i > 0; i-- ) {
+            siblings[i].item->siblingItem = siblings[i-1].item;
+        }
+        siblings[0].item->siblingItem = 0;
+        childItem = siblings[nChildren-1].item;
     }
     for ( i = 0; i < nChildren; i++ ) {
-	if ( siblings[i].item->isOpen() )
-	    siblings[i].item->sort();
+        if ( siblings[i].item->isOpen() ) { siblings[i].item->sort(); }
     }
     delete[] siblings;
 }
@@ -1739,15 +1740,13 @@ void QListViewItem::setExpandable( bool enable )
 void QListViewItem::enforceSortOrder() const
 {
     QListView *lv = listView();
-    if ( !lv || lv && (lv->d->clearing || lv->d->sortcolumn == Unsorted) )
-	return;
-    if ( parentItem &&
-	 (parentItem->lsc != lsc || parentItem->lso != lso) )
-	((QListViewItem *)this)->sortChildItems( (int)parentItem->lsc,
-						 (bool)parentItem->lso );
-    else if ( !parentItem &&
-	      ( (int)lsc != lv->d->sortcolumn || (bool)lso != lv->d->ascending ) )
-	((QListViewItem *)this)->sortChildItems( lv->d->sortcolumn, lv->d->ascending );
+    if ( !lv || lv && (lv->d->clearing || lv->d->sortcolumn == Unsorted) ) { return; }
+    if ( parentItem && (parentItem->lsc != lsc || parentItem->lso != lso) ) {
+        ((QListViewItem *)this)->sortChildItems( (int)parentItem->lsc, (bool)parentItem->lso );
+    }
+    else if ( !parentItem && ( (int)lsc != lv->d->sortcolumn || (bool)lso != lv->d->ascending ) ) {
+        ((QListViewItem *)this)->sortChildItems( lv->d->sortcolumn, lv->d->ascending );
+    }
 }
 
 
@@ -3620,22 +3619,22 @@ void QListView::updateGeometries()
 {
     int th = d->r->totalHeight();
     int tw = d->h->headerWidth();
-    if ( d->h->offset() &&
-	 tw < d->h->offset() + d->h->width() )
-	horizontalScrollBar()->setValue( tw - QListView::d->h->width() );
+    if ( d->h->offset() && tw < d->h->offset() + d->h->width() ) {
+        horizontalScrollBar()->setValue( tw - QListView::d->h->width() );
+    }
 #if 0
-    if ( QApplication::reverseLayout() && d->h->offset() != horizontalScrollBar()->value() )
-	horizontalScrollBar()->setValue( d->h->offset() );
+    if ( QApplication::reverseLayout() && d->h->offset() != horizontalScrollBar()->value() ) {
+        horizontalScrollBar()->setValue( d->h->offset() );
+    }
 #endif
     verticalScrollBar()->raise();
     resizeContents( tw, th );
     if ( d->h->isHidden() ) {
-	setMargins( 0, 0, 0, 0 );
+        setMargins( 0, 0, 0, 0 );
     } else {
-	QSize hs( d->h->sizeHint() );
-	setMargins( 0, hs.height(), 0, 0 );
-	d->h->setGeometry( viewport()->x(), viewport()->y()-hs.height(),
-			   visibleWidth(), hs.height() );
+        QSize hs( d->h->sizeHint() );
+        setMargins( 0, hs.height(), 0, 0 );
+        d->h->setGeometry( viewport()->x(), viewport()->y()-hs.height(), visibleWidth(), hs.height() );
     }
 }
 
