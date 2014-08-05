@@ -54,8 +54,8 @@ class QDict
 #endif
 {
 public:
-    QDict( int size = 17, bool caseSensitive = TRUE )
-	: QGDict( size, StringKey, caseSensitive, FALSE ) { }
+    QDict( int sz = 17, bool caseSensitive = TRUE )
+	: QGDict( sz, StringKey, caseSensitive, FALSE ) { }
     QDict( const QDict<type> &d ) : QGDict( d ) { }
     ~QDict()				{ clear(); }
     QDict<type> &operator=(const QDict<type> &d)

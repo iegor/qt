@@ -59,7 +59,7 @@ protected:
 
 public:
     QMemArray() {}
-    QMemArray( int size ) : QGArray(size*sizeof(type)) {} // ### 4.0 Q_EXPLICIT
+    QMemArray( int sz ) : QGArray(sz*sizeof(type)) {} // ### 4.0 Q_EXPLICIT
     QMemArray( const QMemArray<type> &a ) : QGArray(a) {}
    ~QMemArray() {}
     QMemArray<type> &operator=(const QMemArray<type> &a)
@@ -70,11 +70,11 @@ public:
     uint  count()   const	{ return size(); }
     bool  isEmpty() const	{ return QGArray::size() == 0; }
     bool  isNull()  const	{ return QGArray::data() == 0; }
-    bool  resize( uint size )	{ return QGArray::resize(size*sizeof(type)); }
-    bool  resize( uint size, Optimization optim ) { return QGArray::resize(size*sizeof(type), optim); }
+    bool  resize( uint sz )	{ return QGArray::resize(sz*sizeof(type)); }
+    bool  resize( uint sz, Optimization optim ) { return QGArray::resize(sz*sizeof(type), optim); }
     bool  truncate( uint pos )	{ return QGArray::resize(pos*sizeof(type)); }
-    bool  fill( const type &d, int size = -1 )
-	{ return QGArray::fill((char*)&d,size,sizeof(type) ); }
+    bool  fill( const type &d, int sz = -1 )
+	{ return QGArray::fill((char*)&d,sz,sizeof(type) ); }
     void  detach()		{ QGArray::detach(); }
     QMemArray<type>   copy() const
 	{ QMemArray<type> tmp; return tmp.duplicate(*this); }
