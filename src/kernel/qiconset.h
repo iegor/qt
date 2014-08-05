@@ -109,7 +109,7 @@ public:
 
     virtual QPixmap *createPixmap( const QIconSet& iconSet, QIconSet::Size size,
 				   QIconSet::Mode mode, QIconSet::State state );
-    void setAutoDelete( bool autoDelete ) { autoDel = autoDelete; }
+    void setAutoDelete( bool aDelete ) { autoDel = aDelete; }
     bool autoDelete() const { return autoDel; }
 
     static QIconFactory *defaultFactory();

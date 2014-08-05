@@ -114,13 +114,15 @@ private:
 };
 
 
-inline int QToolBox::addItem( QWidget *item, const QString &label )
-{ return insertItem( -1, item, QIconSet(), label ); }
-inline int QToolBox::addItem( QWidget *item, const QIconSet &iconSet,
-			      const QString &label )
-{ return insertItem( -1, item, iconSet, label ); }
-inline int QToolBox::insertItem( int index, QWidget *item, const QString &label )
-{ return insertItem( index, item, QIconSet(), label ); }
+inline int QToolBox::addItem(QWidget *itm, const QString &label) {
+    return insertItem( -1, itm, QIconSet(), label );
+}
+inline int QToolBox::addItem(QWidget *itm, const QIconSet &iconSet, const QString &label ) {
+    return insertItem( -1, itm, iconSet, label );
+}
+inline int QToolBox::insertItem( int index, QWidget *itm, const QString &label ) {
+    return insertItem( index, itm, QIconSet(), label );
+}
 
 #endif // QT_NO_TOOLBOX
 #endif

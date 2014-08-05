@@ -54,8 +54,8 @@ class QAsciiDict
 #endif
 {
 public:
-    QAsciiDict(int size=17, bool caseSensitive=TRUE, bool copyKeys=TRUE )
-	: QGDict(size,AsciiKey,caseSensitive,copyKeys) {}
+    QAsciiDict(int sz=17, bool caseSensitive=TRUE, bool copyKeys=TRUE )
+	: QGDict(sz,AsciiKey,caseSensitive,copyKeys) {}
     QAsciiDict( const QAsciiDict<type> &d ) : QGDict(d) {}
    ~QAsciiDict()			{ clear(); }
     QAsciiDict<type> &operator=(const QAsciiDict<type> &d)

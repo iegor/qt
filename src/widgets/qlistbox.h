@@ -349,7 +349,7 @@ public:
 
 protected:
     virtual void paint( QPainter * ) = 0;
-    virtual void setText( const QString &text ) { txt = text; }
+    virtual void setText( const QString &t ) { txt = t; }
     void setCustomHighlighting( bool );
 
 private:
