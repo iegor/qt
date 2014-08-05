@@ -3097,8 +3097,8 @@ void QListView::buildDrawableList() const
     dl->setAutoDelete( TRUE );
     if ( d->drawables ) {
         delete ((QListView *)this)->d->drawables;
-        ((QListView *)this)->d->drawables = dl; //NOTE: Was out of if's scope, maybe error
     }
+    ((QListView *)this)->d->drawables = dl;
 
     while ( !stack.isEmpty() ) {
 	cur = stack.pop();
