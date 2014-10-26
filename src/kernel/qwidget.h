@@ -405,13 +405,10 @@ public:
     QLayout *		layout() const { return lay_out; }
 #endif
     void		updateGeometry();
-    virtual void 	reparent( QWidget *parent, WFlags, const QPoint &,
-				  bool showIt=FALSE );
-    void		reparent( QWidget *parent, const QPoint &,
-				  bool showIt=FALSE );
+    virtual void 	reparent( QWidget *parent, WFlags, const QPoint &, bool showIt=FALSE );
+    void		reparent( QWidget *parent, const QPoint &, bool showIt=FALSE );
 #ifndef QT_NO_COMPAT
-    void		recreate( QWidget *parent, WFlags f, const QPoint & p,
-				  bool showIt=FALSE ) { reparent(parent,f,p,showIt); }
+    void		recreate( QWidget *parent, WFlags f, const QPoint & p, bool showIt=FALSE ) { reparent(parent,f,p,showIt); }
 #endif
 
     void		erase();
@@ -854,9 +851,8 @@ inline void QWidget::drawText( const QPoint &p, const QString &s )
 
 inline QWidget *QWidget::parentWidget( bool sameWindow ) const
 {
-    if ( sameWindow )
-	return isTopLevel() ? 0 : (QWidget *)QObject::parent();
-    return (QWidget *)QObject::parent();
+  if ( sameWindow ) { return isTopLevel() ? 0 : (QWidget *)QObject::parent(); }
+  return (QWidget *)QObject::parent();
 }
 
 inline QWidgetMapper *QWidget::wmapper()

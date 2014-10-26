@@ -704,25 +704,20 @@ void QFrame::drawFrame( QPainter *p )
 }
 
 
-/*!
-    Virtual function that draws the contents of the frame.
-
-    The QPainter is already open when you get it, and you must leave
-    it open. Painter \link QPainter::setWorldMatrix()
-    transformations\endlink are switched off on entry. If you
-    transform the painter, remember to take the frame into account and
-    \link QPainter::resetXForm() reset transformation\endlink before
-    returning.
-
-    This function is reimplemented by subclasses that draw something
-    inside the frame. It should only draw inside contentsRect(). The
-    default function does nothing.
-
-    \sa contentsRect(), QPainter::setClipRect()
+/**
+ * Virtual function that draws the contents of the frame.
+ *
+ * The QPainter is already open when you get it, and you must leave it open.
+ * Painter \link QPainter::setWorldMatrix() transformations \endlink are switched off on entry.
+ * If you transform the painter, remember to take the frame into account
+ * and \link QPainter::resetXForm() reset transformation \endlink before returning.
+ *
+ * This function is reimplemented by subclasses that draw something inside the frame.
+ * It should only draw inside contentsRect(). The default function does nothing.
+ *
+ * \sa contentsRect(), QPainter::setClipRect()
 */
-
-void QFrame::drawContents( QPainter * )
-{
+void QFrame::drawContents(QPainter *) {
 }
 
 

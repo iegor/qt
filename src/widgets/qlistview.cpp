@@ -86,178 +86,176 @@ static QPtrDict<QListViewItemIteratorPrivate> *qt_iteratorprivate_dict = 0;
 
 struct QListViewPrivate
 {
-    // classes that are here to avoid polluting the global name space
+  // classes that are here to avoid polluting the global name space
 
-    // the magical hidden mother of all items
-    class Root: public QListViewItem {
-    public:
-	Root( QListView * parent );
+  // the magical hidden mother of all items
+  class Root: public QListViewItem {
+  public:
+    Root( QListView * parent );
 
-	void setHeight( int );
-	void invalidateHeight();
-	void setup();
-	QListView * theListView() const;
+    void setHeight( int );
+    void invalidateHeight();
+    void setup();
+    QListView * theListView() const;
 
-	QListView * lv;
-    };
+    QListView * lv;
+  };
 
-    // for the stack used in drawContentsOffset()
-    class Pending {
-    public:
-	Pending( int level, int ypos, QListViewItem * item)
-	    : l(level), y(ypos), i(item) {};
+  // for the stack used in drawContentsOffset()
+  class Pending {
+  public:
+    Pending( int level, int ypos, QListViewItem * item) : l(level), y(ypos), i(item) {};
 
-	int l; // level of this item; root is -1 or 0
-	int y; // level of this item in the tree
-	QListViewItem * i; // the item itself
-    };
+    int l; // level of this item; root is -1 or 0
+    int y; // level of this item in the tree
+    QListViewItem * i; // the item itself
+  };
 
-    // to remember what's on screen
-    class DrawableItem {
-    public:
-	DrawableItem( Pending * pi ) { y = pi->y; l = pi->l; i = pi->i; };
-	int y;
-	int l;
-	QListViewItem * i;
-    };
+  // to remember what's on screen
+  class DrawableItem {
+  public:
+    DrawableItem( Pending * pi ) { y = pi->y; l = pi->l; i = pi->i; };
+    int y;
+    int l;
+    QListViewItem * i;
+  };
 
-    // for sorting
-    class SortableItem {
-    public:
-	/*
-	  We could be smarter and keep a pointer to the QListView
-	  item instead of numCols, col and asc. This would then allow
-	  us to use the physical ordering of columns rather than the
-	  logical. Microsoft uses the logical ordering, so there is
-	  some virtue in doing so, although it prevents the user from
-	  chosing the secondary key.
-	*/
-	QListViewItem * item;
-	int numCols;
-	int col;
-	bool asc;
+  // for sorting
+  class SortableItem {
+  public:
+    /*
+      We could be smarter and keep a pointer to the QListView
+      item instead of numCols, col and asc. This would then allow
+      us to use the physical ordering of columns rather than the
+      logical. Microsoft uses the logical ordering, so there is
+      some virtue in doing so, although it prevents the user from
+      chosing the secondary key.
+    */
+    QListViewItem * item;
+    int numCols;
+    int col;
+    bool asc;
 
-	int cmp( const SortableItem& i ) const {
-	    int diff = item->compare( i.item, col, asc );
-	    if ( diff == 0 && numCols != 1 ) {
-		for ( int j = 0; j < numCols; j++ ) {
-		    if ( j != col ) {
-			diff = item->compare( i.item, j, asc );
-			if ( diff != 0 )
-			    break;
-		    }
-		}
-	    }
-	    return diff;
-	}
-	bool operator<( const SortableItem& i ) const { return cmp( i ) < 0; }
-	bool operator<=( const SortableItem& i ) const { return cmp( i ) <= 0; }
-	bool operator>( const SortableItem& i ) const { return cmp( i ) > 0; }
-    };
+    int cmp( const SortableItem& i ) const {
+      int diff = item->compare( i.item, col, asc );
+      if ( diff == 0 && numCols != 1 ) {
+        for ( int j = 0; j < numCols; j++ ) {
+          if ( j != col ) {
+            diff = item->compare( i.item, j, asc );
+            if ( diff != 0 ) break;
+          }
+        }
+      }
+      return diff;
+    }
+    bool operator<( const SortableItem& i ) const { return cmp( i ) < 0; }
+    bool operator<=( const SortableItem& i ) const { return cmp( i ) <= 0; }
+    bool operator>( const SortableItem& i ) const { return cmp( i ) > 0; }
+  };
 
-    class ItemColumnInfo {
-    public:
-	ItemColumnInfo(): pm( 0 ), next( 0 ), truncated( FALSE ), dirty( FALSE ), allow_rename( FALSE ), width( 0 ) {}
-	~ItemColumnInfo() { delete pm; delete next; }
-	QString text, tmpText;
-	QPixmap * pm;
-	ItemColumnInfo * next;
-	uint truncated : 1;
-	uint dirty : 1;
-	uint allow_rename : 1;
-	int width;
-    };
+  class ItemColumnInfo {
+  public:
+    ItemColumnInfo(): pm( 0 ), next( 0 ), truncated( FALSE ), dirty( FALSE ), allow_rename( FALSE ), width( 0 ) {}
+    ~ItemColumnInfo() { delete pm; delete next; }
+    QString text, tmpText;
+    QPixmap * pm;
+    ItemColumnInfo * next;
+    uint truncated : 1;
+    uint dirty : 1;
+    uint allow_rename : 1;
+    int width;
+  };
 
-    class ViewColumnInfo {
-    public:
-	ViewColumnInfo(): align(Qt::AlignAuto), sortable(TRUE), next( 0 ) {}
-	~ViewColumnInfo() { delete next; }
-	int align;
-	bool sortable;
-	ViewColumnInfo * next;
-    };
+  class ViewColumnInfo {
+  public:
+    ViewColumnInfo(): align(Qt::AlignAuto), sortable(TRUE), next( 0 ) {}
+    ~ViewColumnInfo() { delete next; }
+    int align;
+    bool sortable;
+    ViewColumnInfo * next;
+  };
 
-    // private variables used in QListView
-    ViewColumnInfo * vci;
-    QHeader * h;
-    Root * r;
-    uint rootIsExpandable : 1;
-    int margin;
+  // private variables used in QListView
+  ViewColumnInfo * vci;
+  QHeader * h;
+  Root * r;
+  uint rootIsExpandable : 1;
+  int margin;
 
-    QListViewItem * focusItem, *highlighted, *oldFocusItem;
+  QListViewItem * focusItem, *highlighted, *oldFocusItem;
 
-    QTimer * timer;
-    QTimer * dirtyItemTimer;
-    QTimer * visibleTimer;
-    int levelWidth;
+  QTimer * timer;
+  QTimer * dirtyItemTimer;
+  QTimer * visibleTimer;
+  int levelWidth;
 
-    // the list of drawables, and the range drawables covers entirely
-    // (it may also include a few items above topPixel)
-    QPtrList<DrawableItem> * drawables;
-    int topPixel;
-    int bottomPixel;
+  // the list of drawables, and the range drawables covers entirely
+  // (it may also include a few items above topPixel)
+  QPtrList<DrawableItem> * drawables;
+  int topPixel;
+  int bottomPixel;
 
-    QPtrDict<void> * dirtyItems;
+  QPtrDict<void> * dirtyItems;
 
-    QListView::SelectionMode selectionMode;
+  QListView::SelectionMode selectionMode;
 
-    // Per-column structure for information not in the QHeader
-    struct Column {
-	QListView::WidthMode wmode;
-    };
-    QPtrVector<Column> column;
+  // Per-column structure for information not in the QHeader
+  struct Column {
+    QListView::WidthMode wmode;
+  };
+  QPtrVector<Column> column;
 
-    // suggested height for the items
-    int fontMetricsHeight;
-    int minLeftBearing, minRightBearing;
-    int ellipsisWidth;
+  // suggested height for the items
+  int fontMetricsHeight;
+  int minLeftBearing, minRightBearing;
+  int ellipsisWidth;
 
-    // currently typed prefix for the keyboard interface, and the time
-    // of the last key-press
-    QString currentPrefix;
-    QTime currentPrefixTime;
+  // currently typed prefix for the keyboard interface, and the time
+  // of the last key-press
+  QString currentPrefix;
+  QTime currentPrefixTime;
 
-    // holds a list of iterators
-    QPtrList<QListViewItemIterator> *iterators;
-    QListViewItem *pressedItem, *selectAnchor;
+  // holds a list of iterators
+  QPtrList<QListViewItemIterator> *iterators;
+  QListViewItem *pressedItem, *selectAnchor;
 
-    QTimer *scrollTimer;
-    QTimer *renameTimer;
-    QTimer *autoopenTimer;
+  QTimer *scrollTimer;
+  QTimer *renameTimer;
+  QTimer *autoopenTimer;
 
-    // sort column and order   #### may need to move to QHeader [subclass]
-    int sortcolumn;
-    bool ascending		:1;
-    bool sortIndicator		:1;
-    // whether to select or deselect during this mouse press.
-    bool allColumnsShowFocus	:1;
-    bool select			:1;
+  // sort column and order   #### may need to move to QHeader [subclass]
+  int sortcolumn;
+  bool ascending		:1;
+  bool sortIndicator		:1;
+  // whether to select or deselect during this mouse press.
+  bool allColumnsShowFocus	:1;
+  bool select			:1;
 
-    // TRUE if the widget should take notice of mouseReleaseEvent
-    bool buttonDown		:1;
-    // TRUE if the widget should ignore a double-click
-    bool ignoreDoubleClick	:1;
+  // TRUE if the widget should take notice of mouseReleaseEvent
+  bool buttonDown		:1;
+  // TRUE if the widget should ignore a double-click
+  bool ignoreDoubleClick	:1;
 
-    bool clearing		:1;
-    bool pressedSelected	:1;
-    bool pressedEmptyArea 	:1;
+  bool clearing		:1;
+  bool pressedSelected	:1;
+  bool pressedEmptyArea 	:1;
 
-    bool useDoubleBuffer	:1;
-    bool toolTips		:1;
-    bool fullRepaintOnComlumnChange:1;
-    bool updateHeader		:1;
+  bool useDoubleBuffer	:1;
+  bool toolTips		:1;
+  bool fullRepaintOnComlumnChange:1;
+  bool updateHeader		:1;
 
-    bool startEdit : 1;
-    bool ignoreEditAfterFocus : 1;
-    bool inMenuMode :1;
+  bool startEdit : 1;
+  bool ignoreEditAfterFocus : 1;
+  bool inMenuMode :1;
 
-    QListView::RenameAction defRenameAction;
+  QListView::RenameAction defRenameAction;
 
-    QListViewItem *startDragItem;
-    QPoint dragStartPos;
-    QListViewToolTip *toolTip;
-    int pressedColumn;
-    QListView::ResizeMode resizeMode;
+  QListViewItem *startDragItem;
+  QPoint dragStartPos;
+  QListViewToolTip *toolTip;
+  int pressedColumn;
+  QListView::ResizeMode resizeMode;
 };
 
 #ifndef QT_NO_TOOLTIP
@@ -940,18 +938,15 @@ void QListViewItem::startRename( int col )
 
 void QListViewItem::removeRenameBox()
 {
-    // Sanity, it should be checked by the functions calling this first anyway
-    QListView *lv = listView();
-    if ( !lv || !renameBox )
-	return;
-    const bool resetFocus = lv->viewport()->focusProxy() == renameBox;
-    const bool renameBoxHadFocus = renameBox->hasFocus();
-    delete renameBox;
-    renameBox = 0;
-    if ( resetFocus )
-	lv->viewport()->setFocusProxy( lv );
-    if (renameBoxHadFocus)
-	lv->setFocus();
+  // Sanity, it should be checked by the functions calling this first anyway
+  QListView *lv = listView();
+  if ( !lv || !renameBox ) return;
+  const bool resetFocus = lv->viewport()->focusProxy() == renameBox;
+  const bool renameBoxHadFocus = renameBox->hasFocus();
+  delete renameBox;
+  renameBox = 0;
+  if ( resetFocus ) lv->viewport()->setFocusProxy( lv );
+  if (renameBoxHadFocus) lv->setFocus();
 }
 
 /*!
@@ -2021,41 +2016,37 @@ const QPixmap * QListViewItem::pixmap( int column ) const
     \sa paintBranches(), QListView::drawContentsOffset()
 */
 
-void QListViewItem::paintCell( QPainter * p, const QColorGroup & cg,
-			       int column, int width, int align )
+void QListViewItem::paintCell( QPainter * p, const QColorGroup & cg, int column, int width, int align )
 {
     // Change width() if you change this.
 
-    if ( !p )
-	return;
+    if ( !p ) return;
 
     QListView *lv = listView();
-    if ( !lv )
-	return;
+    if ( !lv ) return;
     QFontMetrics fm( p->fontMetrics() );
 
     // had, but we _need_ the column info for the ellipsis thingy!!!
     if ( !columns ) {
-	for ( uint i = 0; i < lv->d->column.size(); ++i ) {
-	    setText( i, text( i ) );
-	}
+      for ( uint i = 0; i < lv->d->column.size(); ++i ) {
+        setText( i, text( i ) );
+      }
     }
 
     QString t = text( column );
 
     if ( columns ) {
-	QListViewPrivate::ItemColumnInfo *ci = 0;
-	// try until we have a column info....
-	while ( !ci ) {
-	    ci = (QListViewPrivate::ItemColumnInfo*)columns;
-	    for ( int i = 0; ci && (i < column); ++i )
-		ci = ci->next;
+      QListViewPrivate::ItemColumnInfo *ci = 0;
+      // try until we have a column info....
+      while ( !ci ) {
+        ci = (QListViewPrivate::ItemColumnInfo*)columns;
+        for ( int i = 0; ci && (i < column); ++i ) ci = ci->next;
 
-	    if ( !ci ) {
-		setText( column, t );
-		ci = 0;
-	    }
-	}
+        if ( !ci ) {
+          setText( column, t );
+          ci = 0;
+        }
+      }
 
 	// if the column width changed and this item was not painted since this change
 	if ( ci && ( ci->width != width || ci->text != t || ci->dirty ) ) {
@@ -2620,96 +2611,85 @@ QListView::QListView( QWidget * parent, const char *name, WFlags f )
 
 void QListView::init()
 {
-    d = new QListViewPrivate;
-    d->vci = 0;
-    d->timer = new QTimer( this );
-    d->levelWidth = 20;
-    d->r = 0;
-    d->rootIsExpandable = 0;
-    d->h = new QHeader( this, "list view header" );
-    d->h->installEventFilter( this );
-    d->focusItem = 0;
-    d->oldFocusItem = 0;
-    d->drawables = 0;
-    d->dirtyItems = 0;
-    d->dirtyItemTimer = new QTimer( this );
-    d->visibleTimer = new QTimer( this );
-    d->renameTimer = new QTimer( this );
-    d->autoopenTimer = new QTimer( this );
-    d->margin = 1;
-    d->selectionMode = QListView::Single;
-    d->sortcolumn = 0;
-    d->ascending = TRUE;
-    d->allColumnsShowFocus = FALSE;
-    d->fontMetricsHeight = fontMetrics().height();
-    d->h->setTracking(TRUE);
-    d->buttonDown = FALSE;
-    d->ignoreDoubleClick = FALSE;
-    d->column.setAutoDelete( TRUE );
-    d->iterators = 0;
-    d->scrollTimer = 0;
-    d->sortIndicator = FALSE;
-    d->clearing = FALSE;
-    d->minLeftBearing = fontMetrics().minLeftBearing();
-    d->minRightBearing = fontMetrics().minRightBearing();
-    d->ellipsisWidth = fontMetrics().width( "..." ) * 2;
-    d->highlighted = 0;
-    d->pressedItem = 0;
-    d->selectAnchor = 0;
-    d->select = TRUE;
-    d->useDoubleBuffer = FALSE;
-    d->startDragItem = 0;
-    d->toolTips = TRUE;
+  d = new QListViewPrivate;
+  d->vci = 0;
+  d->timer = new QTimer( this );
+  d->levelWidth = 20;
+  d->r = 0;
+  d->rootIsExpandable = 0;
+  d->h = new QHeader( this, "list view header" );
+  d->h->installEventFilter( this );
+  d->focusItem = 0;
+  d->oldFocusItem = 0;
+  d->drawables = 0;
+  d->dirtyItems = 0;
+  d->dirtyItemTimer = new QTimer( this );
+  d->visibleTimer = new QTimer( this );
+  d->renameTimer = new QTimer( this );
+  d->autoopenTimer = new QTimer( this );
+  d->margin = 1;
+  d->selectionMode = QListView::Single;
+  d->sortcolumn = 0;
+  d->ascending = TRUE;
+  d->allColumnsShowFocus = FALSE;
+  d->fontMetricsHeight = fontMetrics().height();
+  d->h->setTracking(TRUE);
+  d->buttonDown = FALSE;
+  d->ignoreDoubleClick = FALSE;
+  d->column.setAutoDelete( TRUE );
+  d->iterators = 0;
+  d->scrollTimer = 0;
+  d->sortIndicator = FALSE;
+  d->clearing = FALSE;
+  d->minLeftBearing = fontMetrics().minLeftBearing();
+  d->minRightBearing = fontMetrics().minRightBearing();
+  d->ellipsisWidth = fontMetrics().width( "..." ) * 2;
+  d->highlighted = 0;
+  d->pressedItem = 0;
+  d->selectAnchor = 0;
+  d->select = TRUE;
+  d->useDoubleBuffer = FALSE;
+  d->startDragItem = 0;
+  d->toolTips = TRUE;
 #ifndef QT_NO_TOOLTIP
-    d->toolTip = new QListViewToolTip( viewport(), this );
+  d->toolTip = new QListViewToolTip( viewport(), this );
 #endif
-    d->updateHeader = FALSE;
-    d->fullRepaintOnComlumnChange = FALSE;
-    d->resizeMode = NoColumn;
-    d->defRenameAction = Reject;
-    d->pressedEmptyArea = FALSE;
-    d->startEdit = TRUE;
-    d->ignoreEditAfterFocus = FALSE;
-    d->inMenuMode = FALSE;
-    d->pressedSelected = FALSE;
+  d->updateHeader = FALSE;
+  d->fullRepaintOnComlumnChange = FALSE;
+  d->resizeMode = NoColumn;
+  d->defRenameAction = Reject;
+  d->pressedEmptyArea = FALSE;
+  d->startEdit = TRUE;
+  d->ignoreEditAfterFocus = FALSE;
+  d->inMenuMode = FALSE;
+  d->pressedSelected = FALSE;
 
-    setMouseTracking( TRUE );
-    viewport()->setMouseTracking( TRUE );
+  setMouseTracking( TRUE );
+  viewport()->setMouseTracking( TRUE );
 
-    connect( d->timer, SIGNAL(timeout()),
-	     this, SLOT(updateContents()) );
-    connect( d->dirtyItemTimer, SIGNAL(timeout()),
-	     this, SLOT(updateDirtyItems()) );
-    connect( d->visibleTimer, SIGNAL(timeout()),
-	     this, SLOT(makeVisible()) );
-    connect( d->renameTimer, SIGNAL(timeout()),
-	     this, SLOT(startRename()) );
-    connect( d->autoopenTimer, SIGNAL(timeout()),
-	     this, SLOT(openFocusItem()) );
+  connect( d->timer, SIGNAL(timeout()), this, SLOT(updateContents()) );
+  connect( d->dirtyItemTimer, SIGNAL(timeout()), this, SLOT(updateDirtyItems()) );
+  connect( d->visibleTimer, SIGNAL(timeout()), this, SLOT(makeVisible()) );
+  connect( d->renameTimer, SIGNAL(timeout()), this, SLOT(startRename()) );
+  connect( d->autoopenTimer, SIGNAL(timeout()), this, SLOT(openFocusItem()) );
 
-    connect( d->h, SIGNAL(sizeChange(int,int,int)),
-	     this, SLOT(handleSizeChange(int,int,int)) );
-    connect( d->h, SIGNAL(indexChange(int,int,int)),
-	     this, SLOT(handleIndexChange()) );
-    connect( d->h, SIGNAL(sectionClicked(int)),
-	     this, SLOT(changeSortColumn(int)) );
-    connect( d->h, SIGNAL(sectionHandleDoubleClicked(int)),
-	     this, SLOT(adjustColumn(int)) );
-    connect( horizontalScrollBar(), SIGNAL(sliderMoved(int)),
-	     d->h, SLOT(setOffset(int)) );
-    connect( horizontalScrollBar(), SIGNAL(valueChanged(int)),
-	     d->h, SLOT(setOffset(int)) );
+  connect( d->h, SIGNAL(sizeChange(int,int,int)), this, SLOT(handleSizeChange(int,int,int)) );
+  connect( d->h, SIGNAL(indexChange(int,int,int)), this, SLOT(handleIndexChange()) );
+  connect( d->h, SIGNAL(sectionClicked(int)), this, SLOT(changeSortColumn(int)) );
+  connect( d->h, SIGNAL(sectionHandleDoubleClicked(int)), this, SLOT(adjustColumn(int)) );
+  connect( horizontalScrollBar(), SIGNAL(sliderMoved(int)), d->h, SLOT(setOffset(int)) );
+  connect( horizontalScrollBar(), SIGNAL(valueChanged(int)), d->h, SLOT(setOffset(int)) );
 
-    // will access d->r
-    QListViewPrivate::Root * r = new QListViewPrivate::Root( this );
-    r->is_root = TRUE;
-    d->r = r;
-    d->r->setSelectable( FALSE );
+  // will access d->r
+  QListViewPrivate::Root * r = new QListViewPrivate::Root( this );
+  r->is_root = TRUE;
+  d->r = r;
+  d->r->setSelectable( FALSE );
 
-    viewport()->setFocusProxy( this );
-    viewport()->setFocusPolicy( WheelFocus );
-    viewport()->setBackgroundMode( PaletteBase );
-    setBackgroundMode( PaletteBackground, PaletteBase );
+  viewport()->setFocusProxy( this );
+  viewport()->setFocusPolicy( WheelFocus );
+  viewport()->setBackgroundMode( PaletteBase );
+  setBackgroundMode( PaletteBackground, PaletteBase );
 }
 
 /*!

@@ -75,21 +75,15 @@ Q_TEMPLATE_EXTERN template class Q_EXPORT QPtrVector<QConnectionList>;
 class Q_EXPORT QSignalVec : public QPtrVector<QConnectionList>
 {
 public:
-    QSignalVec(int size=17 )
-	: QPtrVector<QConnectionList>(size) {}
-    QSignalVec( const QSignalVec &dict )
-	: QPtrVector<QConnectionList>(dict) {}
+  QSignalVec(int sz=17) : QPtrVector<QConnectionList>(sz) {}
+  QSignalVec( const QSignalVec &dict ) : QPtrVector<QConnectionList>(dict) {}
    ~QSignalVec() { clear(); }
-    QSignalVec &operator=(const QSignalVec &dict)
-	{ return (QSignalVec&)QPtrVector<QConnectionList>::operator=(dict); }
-    QConnectionList* at( uint index ) const  {
-	return index >= size()? 0 : QPtrVector<QConnectionList>::at(index);
-    }
-    bool  insert( uint index, const QConnectionList* d ) {
-	if (index >= size() )
-	    resize( 2*index + 1);
-	return QPtrVector<QConnectionList>::insert(index, d);
-    }
+  QSignalVec &operator=(const QSignalVec &dict) { return (QSignalVec&)QPtrVector<QConnectionList>::operator=(dict); }
+  QConnectionList* at( uint index ) const  { return index >= size()? 0 : QPtrVector<QConnectionList>::at(index); }
+  bool insert( uint index, const QConnectionList* d ) {
+    if (index >= size() ) resize( 2*index + 1);
+    return QPtrVector<QConnectionList>::insert(index, d);
+  }
 };
 
 #define Q_DEFINED_QCONNECTION_LIST

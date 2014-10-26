@@ -117,8 +117,7 @@ public:
     virtual void setMaxCount( int );
     int		maxCount() const;
 
-    enum Policy { NoInsertion, AtTop, AtCurrent, AtBottom,
-		  AfterCurrent, BeforeCurrent };
+    enum Policy { NoInsertion, AtTop, AtCurrent, AtBottom, AfterCurrent, BeforeCurrent };
 
     virtual void setInsertionPolicy( Policy policy );
     Policy	insertionPolicy() const;

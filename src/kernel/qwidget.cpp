@@ -870,8 +870,8 @@ QWidget::QWidget( QWidget *parent, const char *name, WFlags f )
 
     fstrut_dirty = 1;
 
-    isWidget = TRUE;				// is a widget
-    winid = 0;					// default attributes
+    isWidget = TRUE; // is a widget
+    winid = 0; // default attributes
     widget_state = 0;
     widget_flags = f;
     focus_policy = 0;
@@ -885,11 +885,11 @@ QWidget::QWidget( QWidget *parent, const char *name, WFlags f )
 #ifndef QT_NO_LAYOUT
     lay_out = 0;
 #endif
-    extra = 0;					// no extra widget info
+    extra = 0; // no extra widget info
 #ifndef QT_NO_PALETTE
-    bg_col = pal.active().background();		// default background color
+    bg_col = pal.active().background(); // default background color
 #endif
-    create();					// platform-dependent init
+    create(); // platform-dependent init
 #ifndef QT_NO_PALETTE
     pal = isTopLevel() ? QApplication::palette() : parentWidget()->palette();
 #endif
@@ -899,35 +899,32 @@ QWidget::QWidget( QWidget *parent, const char *name, WFlags f )
     fnt.x11SetScreen( x11Screen() );
 #endif // Q_WS_X11
 
-    if ( !isDesktop() )
-	setBackgroundFromMode(); //### parts of this are done in create but not all (see reparent(...) )
+    //### parts of this are done in create but not all (see reparent(...) )
+    if ( !isDesktop() ) setBackgroundFromMode();
     // make sure move/resize events are sent to all widgets
-    QApplication::postEvent( this, new QMoveEvent( crect.topLeft(),
-						   crect.topLeft() ) );
-    QApplication::postEvent( this, new QResizeEvent(crect.size(),
-						    crect.size()) );
+    QApplication::postEvent( this, new QMoveEvent( crect.topLeft(), crect.topLeft() ) );
+    QApplication::postEvent( this, new QResizeEvent(crect.size(), crect.size()) );
     if ( isTopLevel() ) {
-	setWState( WState_ForceHide | WState_CreatedHidden );
-	QFocusData *fd = focusData( TRUE );
-	if ( fd->focusWidgets.findRef(this) < 0 )
-	    fd->focusWidgets.append( this );
-    } else {
-	// propagate enabled state
-	if ( !parentWidget()->isEnabled() )
-	    setWState( WState_Disabled );
-	// new widgets do not show up in already visible parents
-	if ( parentWidget()->isVisible() )
-	    setWState( WState_ForceHide | WState_CreatedHidden );
+      setWState( WState_ForceHide | WState_CreatedHidden );
+      QFocusData *fd = focusData( TRUE );
+    if ( fd->focusWidgets.findRef(this) < 0 )
+      fd->focusWidgets.append( this );
     }
-    if ( ++instanceCounter > maxInstances )
-    	maxInstances = instanceCounter;
+    else {
+      // propagate enabled state
+      if ( !parentWidget()->isEnabled() ) setWState( WState_Disabled );
+      // new widgets do not show up in already visible parents
+      if ( parentWidget()->isVisible() )
+        setWState( WState_ForceHide | WState_CreatedHidden );
+    }
+    if ( ++instanceCounter > maxInstances ) maxInstances = instanceCounter;
 }
 
-/*!
-    Destroys the widget.
-
-    All this widget's children are deleted first. The application
-    exits if this widget is the main widget.
+/**
+ * Destroys the widget.
+ *
+ * All this widget's children are deleted first.
+ * The application exits if this widget is the main widget.
 */
 
 QWidget::~QWidget()

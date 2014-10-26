@@ -468,52 +468,44 @@ private:	// Disabled copy constructor and operator=
 class Q_EXPORT QCheckListItem : public QListViewItem
 {
 public:
-    enum Type { RadioButton,
-		CheckBox,
-		Controller,
-		RadioButtonController=Controller,
-		CheckBoxController };
-    // ### should be integrated with qbutton in ver4 perhaps
-    enum ToggleState { Off, NoChange, On };
+  enum Type {
+    RadioButton,
+    CheckBox,
+    Controller,
+    RadioButtonController=Controller,
+    CheckBoxController
+  };
+  // ### should be integrated with qbutton in ver4 perhaps
+  enum ToggleState { Off, NoChange, On };
 
-    QCheckListItem( QCheckListItem *parent, const QString &text,
-		    Type = RadioButtonController );
-    QCheckListItem( QCheckListItem *parent, QListViewItem *after,
- 		    const QString &text, Type = RadioButtonController );
-    QCheckListItem( QListViewItem *parent, const QString &text,
-		    Type = RadioButtonController );
-    QCheckListItem( QListViewItem *parent, QListViewItem *after,
- 		    const QString &text, Type = RadioButtonController );
-    QCheckListItem( QListView *parent, const QString &text,
-		    Type = RadioButtonController );
-    QCheckListItem( QListView *parent, QListViewItem *after,
- 		    const QString &text, Type = RadioButtonController );
-    QCheckListItem( QListViewItem *parent, const QString &text,
-		    const QPixmap & );
-    QCheckListItem( QListView *parent, const QString &text,
-		    const QPixmap & );
-    ~QCheckListItem();
+  QCheckListItem( QCheckListItem *parent, const QString &text, Type = RadioButtonController );
+  QCheckListItem( QCheckListItem *parent, QListViewItem *after, const QString &text, Type = RadioButtonController );
+  QCheckListItem( QListViewItem *parent, const QString &text, Type = RadioButtonController );
+  QCheckListItem( QListViewItem *parent, QListViewItem *after, const QString &text, Type = RadioButtonController );
+  QCheckListItem( QListView *parent, const QString &text, Type = RadioButtonController );
+  QCheckListItem( QListView *parent, QListViewItem *after, const QString &text, Type = RadioButtonController );
+  QCheckListItem( QListViewItem *parent, const QString &text, const QPixmap & );
+  QCheckListItem( QListView *parent, const QString &text, const QPixmap & );
+  ~QCheckListItem();
 
-    void paintCell( QPainter *,  const QColorGroup & cg,
-		    int column, int width, int alignment );
-    virtual void paintFocus( QPainter *, const QColorGroup & cg,
-			     const QRect & r );
-    int width( const QFontMetrics&, const QListView*, int column) const;
-    void setup();
+  void paintCell( QPainter *,  const QColorGroup & cg, int column, int width, int alignment );
+  virtual void paintFocus( QPainter *, const QColorGroup & cg, const QRect & r );
+  int width( const QFontMetrics&, const QListView*, int column) const;
+  void setup();
 
-    virtual void setOn( bool ); // ### should be replaced by setChecked in ver4
-    bool isOn() const { return on; }
-    Type type() const { return myType; }
-    QString text() const { return QListViewItem::text( 0 ); }
-    QString text( int n ) const { return QListViewItem::text( n ); }
+  virtual void setOn( bool ); // ### should be replaced by setChecked in ver4
+  bool isOn() const { return on; }
+  Type type() const { return myType; }
+  QString text() const { return QListViewItem::text( 0 ); }
+  QString text( int n ) const { return QListViewItem::text( n ); }
 
-    void setTristate( bool );
-    bool isTristate() const;
-    ToggleState state() const;
-    void setState( ToggleState s);
+  void setTristate( bool );
+  bool isTristate() const;
+  ToggleState state() const;
+  void setState( ToggleState s);
 
-    int rtti() const;
-    static int RTTI;
+  int rtti() const;
+  static int RTTI;
 
 protected:
     void activate();

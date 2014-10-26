@@ -55,37 +55,31 @@ class QPtrVector
 {
 public:
     QPtrVector()				{ }
-    QPtrVector( uint size ) : QGVector(size) { }
+    QPtrVector( uint sz ) : QGVector(sz) { }
     QPtrVector( const QPtrVector<type> &v ) : QGVector( v ) { }
     ~QPtrVector()				{ clear(); }
-    QPtrVector<type> &operator=(const QPtrVector<type> &v)
-			{ return (QPtrVector<type>&)QGVector::operator=(v); }
+    QPtrVector<type> &operator=(const QPtrVector<type> &v) { return (QPtrVector<type>&)QGVector::operator=(v); }
     bool operator==( const QPtrVector<type> &v ) const { return QGVector::operator==(v); }
-    type **data()   const		{ return (type **)QGVector::data(); }
-    uint  size()    const		{ return QGVector::size(); }
-    uint  count()   const		{ return QGVector::count(); }
-    bool  isEmpty() const		{ return QGVector::count() == 0; }
-    bool  isNull()  const		{ return QGVector::size() == 0; }
-    bool  resize( uint size )		{ return QGVector::resize(size); }
+    type **data()   const { return (type **)QGVector::data(); }
+    uint  size()    const { return QGVector::size(); }
+    uint  count()   const { return QGVector::count(); }
+    bool  isEmpty() const { return QGVector::count() == 0; }
+    bool  isNull()  const { return QGVector::size() == 0; }
+    bool  resize( uint sz ) { return QGVector::resize(sz); }
     bool  insert( uint i, const type *d){ return QGVector::insert(i,(Item)d); }
-    bool  remove( uint i )		{ return QGVector::remove(i); }
-    type *take( uint i )		{ return (type *)QGVector::take(i); }
-    void  clear()			{ QGVector::clear(); }
-    bool  fill( const type *d, int size=-1 )
-					{ return QGVector::fill((Item)d,size);}
-    void  sort()			{ QGVector::sort(); }
+    bool  remove( uint i ) { return QGVector::remove(i); }
+    type *take( uint i ) { return (type *)QGVector::take(i); }
+    void  clear() { QGVector::clear(); }
+    bool  fill( const type *d, int size=-1 ) { return QGVector::fill((Item)d,size);}
+    void  sort() { QGVector::sort(); }
     int	  bsearch( const type *d ) const{ return QGVector::bsearch((Item)d); }
-    int	  findRef( const type *d, uint i=0 ) const
-					{ return QGVector::findRef((Item)d,i);}
-    int	  find( const type *d, uint i= 0 ) const
-					{ return QGVector::find((Item)d,i); }
-    uint  containsRef( const type *d ) const
-				{ return QGVector::containsRef((Item)d); }
-    uint  contains( const type *d ) const
-					{ return QGVector::contains((Item)d); }
-    type *operator[]( int i ) const	{ return (type *)QGVector::at(i); }
-    type *at( uint i ) const		{ return (type *)QGVector::at(i); }
-    void  toList( QGList *list ) const	{ QGVector::toList(list); }
+    int	  findRef( const type *d, uint i=0 ) const { return QGVector::findRef((Item)d,i);}
+    int	  find( const type *d, uint i= 0 ) const { return QGVector::find((Item)d,i); }
+    uint  containsRef( const type *d ) const { return QGVector::containsRef((Item)d); }
+    uint  contains( const type *d ) const { return QGVector::contains((Item)d); }
+    type *operator[]( int i ) const { return (type *)QGVector::at(i); }
+    type *at( uint i ) const { return (type *)QGVector::at(i); }
+    void  toList( QGList *list ) const { QGVector::toList(list); }
 
 #ifdef Q_QDOC
 protected:
